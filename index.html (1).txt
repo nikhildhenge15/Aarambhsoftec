@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing System</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Billing System</h1>
+            <ul>
+                <li id="dashboardBtn">📊 Dashboard</li>
+                <li id="addConsumerBtn">👤 Add New Consumer</li>
+                <li id="addBillBtn">💰 Add New Bill</li>
+                <li id="billingHistoryBtn">📜 Billing History</li>
+                <li id="viewConsumersBtn">👥 View Consumers</li>
+                <li id="viewConsumerBillBtn">📋 View Consumer Bill</li>
+            </ul>
+        </div>
+        <div class="content" id="contentArea">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+        <div class="printer-section">
+            <button onclick="connectBluetoothPrinter()">🔗 Connect Bluetooth Printer</button>
+            <button onclick="printBill()">🖨️ Print Bill</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

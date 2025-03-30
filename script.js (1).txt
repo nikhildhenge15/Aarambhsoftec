@@ -1,0 +1,56 @@
+document.addEventListener('DOMContentLoaded', function() {
+    setupSidebarButtons();
+});
+
+function setupSidebarButtons() {
+    document.getElementById('addConsumerBtn').addEventListener('click', showAddConsumer);
+    document.getElementById('addBillBtn').addEventListener('click', showAddBill);
+    document.getElementById('billingHistoryBtn').addEventListener('click', showBillingHistory);
+    document.getElementById('viewConsumersBtn').addEventListener('click', showViewConsumers);
+    document.getElementById('dashboardBtn').addEventListener('click', showDashboard);
+    document.getElementById('viewConsumerBillBtn').addEventListener('click', showViewConsumerBill);
+}
+
+let bluetoothDevice = null;
+let printerCharacteristic = null;
+
+// 📌 **ब्लूटूथ प्रिंटर शोधा आणि कनेक्ट करा**
+async function connectBluetoothPrinter() {
+    try {
+        console.log("🔍 Searching for Bluetooth Printer...");
+        bluetoothDevice = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb']
+        });
+
+        console.log("🔗 Connecting to Printer...");
+        const server = await bluetoothDevice.gatt.connect();
+        const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+        printerCharacteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
+
+        alert("✅ Printer Connected Successfully!");
+    } catch (error) {
+        console.error("❌ Printer Connection Error:", error);
+        alert("❌ प्रिंटर कनेक्ट होत नाही! कृपया ब्लूटूथ चालू आहे का ते तपासा.");
+    }
+}
+
+// 📌 **बिल प्रिंट करा**
+async function printBill() {
+    if (!printerCharacteristic) {
+        alert("❌ Printer is not connected! Please connect first.");
+        return;
+    }
+
+    try {
+        const encoder = new TextEncoder();
+        const text = "🔹 Water Billing System 🔹\n--------------------------------\nConsumer Name: Test User\nMeter No: 123456\nPrevious Reading: 100\nCurrent Reading: 120\nTotal Bill: ₹260.00\n--------------------------------\n";
+        const data = encoder.encode('\x1B\x40' + text + '\n\x1D\x56\x00');
+
+        await printerCharacteristic.writeValue(data);
+        alert("✅ Bill Printed Successfully!");
+    } catch (error) {
+        console.error("❌ Print Error:", error);
+        alert("❌ Printing Failed! Printer कनेक्शन पुन्हा तपासा.");
+    }
+}
